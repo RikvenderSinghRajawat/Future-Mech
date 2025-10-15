@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+{% set css_file = 'admin.css' %}
+{% set js_file = 'admin.js' %}
+{% set title = 'Manage Bookings - Future Mech Admin' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <section class="dashboard-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="dashboard-title">Manage Bookings</h1>
+                    <p class="dashboard-subtitle">View and manage all service bookings</p>
+                </div>
+                <div class="col-lg-4 dashboard-actions">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-light" onclick="filterBookings('all')">
+                            All
+                        </button>
+                        <button type="button" class="btn btn-outline-primary" onclick="filterBookings('pending')">
+                            Pending
+                        </button>
+                        <button type="button" class="btn btn-outline-warning" onclick="filterBookings('confirmed')">
+                            Confirmed
+                        </button>
+                        <button type="button" class="btn btn-outline-info" onclick="filterBookings('in_progress')">
+                            In Progress
+                        </button>
+                        <button type="button" class="btn btn-outline-success" onclick="filterBookings('completed')">
+                            Completed
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container py-5">
+        <!-- Bookings Table -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h4 class="card-title">All Bookings</h4>
+                <div class="header-actions">
+                    <input type="date" id="dateFilter" class="form-control me-2" style="width: auto;">
+                    <input type="text" id="bookingSearch" placeholder="Search bookings..." class="form-control">
+                </div>
+            </div>
+            <div class="card-body">
+                {% if bookings %}
+                <div class="table-responsive">
+                    <table class="table table-hover" id="bookingsTable">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Customer</th>
+                                <th>Service</th>
+                                <th>Vehicle</th>
+                                <th>Scheduled Date</th>
+                                <th>Assigned To</th>
+                                <th>Status</th>
+                                <th>Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr class="booking-row status-{{ booking.status }}" data-booking-id="{{ booking.id }}">
+                                <td>#{{ booking.id }}</td>
+                                <td>
+                                    <div class="customer-info">
+                                        <strong>{{ booking.client_name }}</strong>
+                                        <small class="text-muted d-block">{{ booking.phone }}</small>
+                                    </div>
+                                </td>
+                                <td>{{ booking.service_name }}</td>
+                                <td>
+                                    {% if booking.registration_no %}
+                                    {{ booking.registration_no }} ({{ booking.model }})
+                                    {% else %}
+                                    Not specified
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if booking.scheduled_date %}
+                                    {{ booking.scheduled_date.strftime('%b %d, %Y %I:%M %p') }}
+                                    {% else %}
+                                    Not scheduled
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if booking.service_person %}
+                                    {{ booking.service_person }}
+                                    {% else %}
+                                    <span class="text-muted">Unassigned</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge status-{{ booking.status }}">
+                                        {{ booking.status.replace('_', ' ').title() }}
+                                    </span>
+                                </td>
+                                <td>₹{{ "%.2f"|format(booking.price) }}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-primary dropdown-toggle" 
+                                                    type="button" data-bs-toggle="dropdown">
+                                                Actions
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a class="dropdown-item view-booking" 
+                                                       href="#" data-booking-id="{{ booking.id }}">
+                                                        <i class="fas fa-eye me-2"></i>View Details
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item assign-booking" 
+                                                       href="#" data-booking-id="{{ booking.id }}">
+                                                        <i class="fas fa-user-plus me-2"></i>Assign Technician
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item update-status" 
+                                                       href="#" data-booking-id="{{ booking.id }}">
+                                                        <i class="fas fa-sync me-2"></i>Update Status
+                                                    </a>
+                                                </li>
+                                                {% if booking.status == 'completed' %}
+                                                <li>
+                                                    <a class="dropdown-item generate-report" 
+                                                       href="{{ url_for('generate_report', booking_id=booking.id) }}">
+                                                        <i class="fas fa-file-pdf me-2"></i>Generate PDI Report
+                                                    </a>
+                                                </li>
+                                                {% endif %}
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li>
+                                                    <a class="dropdown-item text-danger delete-booking" 
+                                                       href="#" data-booking-id="{{ booking.id }}">
+                                                        <i class="fas fa-trash me-2"></i>Delete
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-calendar-times fa-3x"></i>
+                    <h5>No Bookings Found</h5>
+                    <p>There are no bookings in the system yet.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Booking Details Modal -->
+<div class="modal fade" id="bookingDetailsModal" tabindex="-1" aria-labelledby="bookingDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookingDetailsModalLabel">Booking Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="bookingDetailsContent">
+                <!-- Content will be loaded via AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Assign Technician Modal -->
+<div class="modal fade" id="assignTechnicianModal" tabindex="-1" aria-labelledby="assignTechnicianModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="assignTechnicianModalLabel">Assign Technician</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="assignTechnicianForm">
+                <input type="hidden" id="assignBookingId" name="booking_id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="technicianSelect" class="form-label">Select Technician</label>
+                        <select class="form-select" id="technicianSelect" name="assigned_to" required>
+                            <option value="">Choose a technician...</option>
+                            {% for person in service_persons %}
+                            <option value="{{ person.id }}">{{ person.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="assignmentNotes" class="form-label">Assignment Notes (Optional)</label>
+                        <textarea class="form-control" id="assignmentNotes" name="notes" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Assign Technician</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Update Status Modal -->
+<div class="modal fade" id="updateStatusModal" tabindex="-1" aria-labelledby="updateStatusModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateStatusModalLabel">Update Booking Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="updateStatusForm">
+                <input type="hidden" id="statusBookingId" name="booking_id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="statusSelect" class="form-label">Select Status</label>
+                        <select class="form-select" id="statusSelect" name="status" required>
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="statusNotes" class="form-label">Status Notes (Optional)</label>
+                        <textarea class="form-control" id="statusNotes" name="notes" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update Status</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- PDI Report Modal -->
+<div class="modal fade" id="pdiReportModal" tabindex="-1" aria-labelledby="pdiReportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pdiReportModalLabel">PDI Report / Job Card</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="pdiReportContent">
+                <!-- PDI Report content will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="printPDIReport()">
+                    <i class="fas fa-print me-2"></i>Print Report
+                </button>
+                <button type="button" class="btn btn-success" onclick="downloadPDIReport()">
+                    <i class="fas fa-download me-2"></i>Download PDF
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

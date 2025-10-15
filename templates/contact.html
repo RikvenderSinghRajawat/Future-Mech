@@ -1,0 +1,282 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us - Future Mech{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <div class="page-header-content">
+                    <h1 class="display-3 fw-bold mb-4">Contact Us</h1>
+                    <p class="lead mb-0">Get in touch with our expert team for all your automotive needs</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Contact Information Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-4 col-md-6">
+            <div class="contact-card animate-on-scroll">
+                <div class="contact-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h5>Visit Our Location</h5>
+                <p>123 Auto Street<br>Car City, CC 12345<br>United States</p>
+                <a href="#" class="btn btn-outline-primary">Get Directions</a>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6">
+            <div class="contact-card animate-on-scroll">
+                <div class="contact-icon">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <h5>Call Us</h5>
+                <p>6378528881<br>Mon-Sun: 8:00 AM - 6:00 PM<br>Emergency: 24/7</p>
+                <a href="tel:+916378528881" class="btn btn-outline-primary">Call Now</a>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6">
+            <div class="contact-card animate-on-scroll">
+                <div class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h5>Email Us</h5>
+                <p>Sukhrajsingh7773@gmail.com<br>support@futuremech.com<br>Response within 24 hours</p>
+                <a href="mailto:Sukhrajsingh7773@gmail.com" class="btn btn-outline-primary">Send Email</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Success Message (Hidden by default) -->
+    <div id="successMessage" class="alert alert-success alert-dismissible fade" role="alert" style="display: none;">
+        <i class="fas fa-check-circle me-2"></i>
+        <strong>Success!</strong> Your message has been sent successfully. We'll get back to you within 24 hours.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    
+    <!-- Error Message (Hidden by default) -->
+    <div id="errorMessage" class="alert alert-danger alert-dismissible fade" role="alert" style="display: none;">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <strong>Error!</strong> There was a problem sending your message. Please try again or contact us directly.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    
+    <!-- Contact Form and Map -->
+    <div class="row g-5">
+        <div class="col-lg-8">
+            <div class="contact-form-container animate-on-scroll">
+                <h3 class="mb-4">
+                    <i class="fas fa-paper-plane me-2"></i>Send us a Message
+                </h3>
+                <p class="text-muted mb-4">Fill out the form below and we'll respond within 24 hours</p>
+                
+                <!-- Formspree Contact Form -->
+                <form id="contactForm" action="https://formspree.io/f/xvgwbzbq" method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label for="name" class="form-label">
+                                <i class="fas fa-user me-1"></i>Full Name *
+                            </label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="John Doe" required>
+                            <div class="invalid-feedback">Please enter your name</div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <label for="email" class="form-label">
+                                <i class="fas fa-envelope me-1"></i>Email Address *
+                            </label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="john@example.com" required>
+                            <div class="invalid-feedback">Please enter a valid email</div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label for="phone" class="form-label">
+                                <i class="fas fa-phone me-1"></i>Phone Number
+                            </label>
+                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="+91 6378528881">
+                            <div class="invalid-feedback">Please enter a valid phone number</div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <label for="service" class="form-label">
+                                <i class="fas fa-cogs me-1"></i>Service Interest
+                            </label>
+                            <select class="form-select" id="service" name="service">
+                                <option value="">Select a service...</option>
+                                <option value="PDI - Pre Delivery Inspection">PDI - Pre Delivery Inspection</option>
+                                <option value="SCI - Insurance Evaluation">SCI - Insurance Evaluation</option>
+                                <option value="BSI - Suspension Check">BSI - Suspension Check</option>
+                                <option value="Premium Detailing">Premium Detailing</option>
+                                <option value="Emergency SOS">Emergency SOS Service</option>
+                                <option value="Genuine Parts">Genuine Car Parts</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="subject" class="form-label">
+                            <i class="fas fa-tag me-1"></i>Subject *
+                        </label>
+                        <input type="text" class="form-control" id="subject" name="_subject" placeholder="How can we help you?" required>
+                        <div class="invalid-feedback">Please enter a subject</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="message" class="form-label">
+                            <i class="fas fa-comment-dots me-1"></i>Your Message *
+                        </label>
+                        <textarea class="form-control" id="message" name="message" rows="6" placeholder="Tell us more about your inquiry..." required></textarea>
+                        <div class="invalid-feedback">Please enter your message</div>
+                        <small class="form-text text-muted">Minimum 10 characters</small>
+                    </div>
+                    
+                    <!-- Hidden fields for better email organization -->
+                    <input type="hidden" name="_cc" value="support@futuremech.com">
+                    <input type="text" name="_gotcha" style="display:none">
+                    
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg px-5 py-3" id="submitBtn">
+                            <i class="fas fa-paper-plane me-2"></i>
+                            <span class="btn-text">Send Message</span>
+                            <span class="spinner-border spinner-border-sm ms-2 d-none" role="status"></span>
+                        </button>
+                    </div>
+                    
+                    <p class="text-center text-muted mt-3 mb-0">
+                        <small><i class="fas fa-lock me-1"></i>Your information is secure and will never be shared</small>
+                    </p>
+                </form>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="map-container animate-on-scroll">
+                <h3 class="mb-4">
+                    <i class="fas fa-map-marker-alt me-2"></i>Find Us
+                </h3>
+                <div class="map-placeholder">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <p>Interactive Map</p>
+                    <small>123 Auto Street, Car City</small>
+                </div>
+                
+                <!-- Business Hours -->
+                <div class="business-hours mt-4">
+                    <h5><i class="fas fa-clock me-2"></i>Business Hours</h5>
+                    <div class="hours-list">
+                        <div class="hours-item">
+                            <span><i class="fas fa-calendar-day me-2"></i>Monday - Sunday</span>
+                            <span class="badge bg-primary">8:00 AM - 6:00 PM</span>
+                        </div>
+                        <div class="hours-item emergency">
+                            <span><i class="fas fa-ambulance me-2"></i>Emergency Service</span>
+                            <span class="badge bg-warning text-dark">24/7 Available</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Contact Info -->
+                <div class="quick-contact mt-4">
+                    <h5><i class="fas fa-info-circle me-2"></i>Quick Contact</h5>
+                    <div class="contact-info-list">
+                        <div class="contact-info-item">
+                            <i class="fas fa-phone-alt"></i>
+                            <a href="tel:+916378528881">6378528881</a>
+                        </div>
+                        <div class="contact-info-item">
+                            <i class="fas fa-envelope"></i>
+                            <a href="mailto:Sukhrajsingh7773@gmail.com">Sukhrajsingh7773@gmail.com</a>
+                        </div>
+                        <div class="contact-info-item">
+                            <i class="fas fa-globe"></i>
+                            <a href="#">www.futuremech.com</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAQ Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="faq-section animate-on-scroll">
+                <h3 class="text-center mb-5">
+                    <i class="fas fa-question-circle me-2"></i>Frequently Asked Questions
+                </h3>
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                <i class="fas fa-tools me-2"></i>What services do you offer?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                We offer comprehensive automotive services including PDI inspections, SCI insurance evaluations, BSI suspension checks, premium detailing, emergency SOS services, and genuine car parts.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                <i class="fas fa-calendar-check me-2"></i>How do I book a service?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                You can book a service by calling us, visiting our location, or using our online booking system. Simply select your preferred service, choose a date and time, and we'll confirm your appointment.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                <i class="fas fa-ambulance me-2"></i>Do you offer emergency services?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes! Our HPA SOS service provides 24/7 emergency roadside assistance including battery jump starts, emergency towing, and immediate support when you need it most.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                <i class="fas fa-clock me-2"></i>How quickly will I receive a response?
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                We aim to respond to all inquiries within 24 hours during business days. For urgent matters, please call us directly at 6378528881 for immediate assistance.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/contact.js') }}"></script>
+{% endblock %}

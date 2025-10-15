@@ -1,0 +1,3 @@
+give me all otther remain file 
+give proper code must and a lot of  animited
+also in this code find error jinja2.exceptions.UndefinedError: 'css_file' is undefined make sure the if any code need update so give proper code update also the feature in client car parts buy service buy  and payment proper work and in admin car parts and service updated by users and content of site like lines titel logos background video  payment managment pdi report generation job card generate also same in service 

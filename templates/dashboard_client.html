@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+
+{% block title %}Client Dashboard - Future Mech{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_client.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="dashboard-title">Welcome back, {{ session.username }}!</h1>
+                    <p class="dashboard-subtitle">Manage your vehicles, bookings, and orders</p>
+            </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="dashboard-actions">
+                        <a href="{{ url_for('services') }}" class="btn btn-primary me-2">
+                            <i class="fas fa-calendar-plus me-2"></i>Book Service
+                    </a>
+                    <a href="{{ url_for('car_parts') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-shopping-cart me-2"></i>Shop Parts
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+                </div>
+
+    <div class="container">
+                <!-- Stats Cards -->
+        <div class="row g-4 mb-5">
+            <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-content">
+                        <h3 class="stat-number">{{ bookings|length }}</h3>
+                        <p class="stat-label">Total Bookings</p>
+                    </div>
+                        </div>
+                    </div>
+            <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                        <i class="fas fa-shopping-bag"></i>
+                        </div>
+                        <div class="stat-content">
+                        <h3 class="stat-number">{{ orders|length }}</h3>
+                        <p class="stat-label">Total Orders</p>
+                    </div>
+                        </div>
+                    </div>
+            <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <div class="stat-content">
+                        <h3 class="stat-number">{{ vehicles|length }}</h3>
+                        <p class="stat-label">My Vehicles</p>
+                    </div>
+                        </div>
+                    </div>
+            <div class="col-lg-3 col-md-6">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                        <h3 class="stat-number">{{ bookings|selectattr('status', 'equalto', 'pending')|list|length }}</h3>
+                        <p class="stat-label">Pending Services</p>
+                    </div>
+                        </div>
+                    </div>
+                </div>
+
+        <!-- Main Content -->
+        <div class="row g-4">
+            <!-- Recent Bookings -->
+            <div class="col-lg-8">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-calendar-alt me-2"></i>Recent Bookings
+                        </h5>
+                        <a href="{{ url_for('services') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                            </div>
+                    <div class="card-body">
+                        {% if bookings %}
+                            <div class="bookings-list">
+                                {% for booking in bookings[:5] %}
+                                <div class="booking-item">
+                                    <div class="booking-info">
+                                        <h6 class="booking-service">{{ booking.service_name }}</h6>
+                                        <p class="booking-date">
+                                            <i class="fas fa-calendar me-1"></i>
+                                            {{ booking.scheduled_date.strftime('%B %d, %Y at %I:%M %p') if booking.scheduled_date else 'Not scheduled' }}
+                                        </p>
+                                        <p class="booking-price">₹{{ "%.2f"|format(booking.price) }}</p>
+                            </div>
+                                    <div class="booking-status">
+                                        <span class="badge status-{{ booking.status }}">
+                                            {{ booking.status.replace('_', ' ').title() }}
+                                        </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                        {% else %}
+                            <div class="empty-state">
+                                <i class="fas fa-calendar-alt fa-3x text-muted mb-3"></i>
+                                <h5>No bookings yet</h5>
+                                <p class="text-muted">Book your first service to get started</p>
+                                <a href="{{ url_for('services') }}" class="btn btn-primary">Book Service</a>
+                                </div>
+                                {% endif %}
+                    </div>
+                            </div>
+                        </div>
+                        
+            <!-- Quick Actions -->
+            <div class="col-lg-4">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-bolt me-2"></i>Quick Actions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="quick-actions">
+                            <a href="{{ url_for('services') }}" class="quick-action-btn">
+                                <i class="fas fa-calendar-plus"></i>
+                                <span>Book Service</span>
+                            </a>
+                            <a href="{{ url_for('car_parts') }}" class="quick-action-btn">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>Shop Parts</span>
+                            </a>
+                            <button class="quick-action-btn" data-bs-toggle="modal" data-bs-target="#addVehicleModal">
+                                <i class="fas fa-car"></i>
+                                <span>Add Vehicle</span>
+                                </button>
+                            <a href="{{ url_for('contact') }}" class="quick-action-btn">
+                                <i class="fas fa-phone"></i>
+                                <span>Contact Support</span>
+                        </a>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- My Vehicles -->
+                <div class="dashboard-card mt-4">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-car me-2"></i>My Vehicles
+                        </h5>
+                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addVehicleModal">
+                            Add Vehicle
+                                </button>
+                            </div>
+                    <div class="card-body">
+                        {% if vehicles %}
+                            <div class="vehicles-list">
+                                {% for vehicle in vehicles[:3] %}
+                                <div class="vehicle-item">
+                                    <div class="vehicle-info">
+                                        <h6 class="vehicle-name">{{ vehicle.make }} {{ vehicle.model }}</h6>
+                                        <p class="vehicle-details">
+                                            {{ vehicle.year }} • {{ vehicle.registration_no }}
+                                        </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                        {% else %}
+                            <div class="empty-state">
+                                <i class="fas fa-car fa-2x text-muted mb-2"></i>
+                                <p class="text-muted mb-3">No vehicles added yet</p>
+                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addVehicleModal">
+                            Add Vehicle
+                        </button>
+                    </div>
+                        {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+        <!-- Recent Orders -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-shopping-bag me-2"></i>Recent Orders
+                        </h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                        </div>
+                    <div class="card-body">
+                        {% if orders %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Date</th>
+                                            <th>Items</th>
+                                            <th>Total</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for order in orders[:5] %}
+                                        <tr>
+                                            <td>#{{ order.id }}</td>
+                                            <td>{{ order.created_at.strftime('%B %d, %Y') }}</td>
+                                            <td>{{ order.item_count }} items</td>
+                                            <td>₹{{ "%.2f"|format(order.total_price) }}</td>
+                                            <td>
+                                                <span class="badge status-{{ order.payment_status }}">
+                                                    {{ order.payment_status.title() }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-primary">View</button>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                        </div>
+                        {% else %}
+                            <div class="empty-state">
+                                <i class="fas fa-shopping-bag fa-3x text-muted mb-3"></i>
+                                <h5>No orders yet</h5>
+                                <p class="text-muted">Start shopping for car parts</p>
+                                <a href="{{ url_for('car_parts') }}" class="btn btn-primary">Shop Now</a>
+                    </div>
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+                        </div>
+                    </div>
+</div>
+
+<!-- Add Vehicle Modal -->
+<div class="modal fade" id="addVehicleModal" tabindex="-1" aria-labelledby="addVehicleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addVehicleModalLabel">Add Vehicle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="addVehicleForm" method="POST">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Registration Number</label>
+                            <input type="text" class="form-control" name="registration_no" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Make</label>
+                            <input type="text" class="form-control" name="make" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Model</label>
+                            <input type="text" class="form-control" name="model" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Year</label>
+                            <input type="number" class="form-control" name="year" min="1900" max="2024" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Fuel Type</label>
+                            <select class="form-select" name="fuel_type" required>
+                                <option value="">Select fuel type</option>
+                                <option value="Petrol">Petrol</option>
+                                <option value="Diesel">Diesel</option>
+                                <option value="Electric">Electric</option>
+                                <option value="Hybrid">Hybrid</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Odometer (km)</label>
+                            <input type="number" class="form-control" name="odometer" min="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Vehicle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard_client.js') }}"></script>
+{% endblock %}

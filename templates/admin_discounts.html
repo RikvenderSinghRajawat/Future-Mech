@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+{% set css_file = 'admin.css' %}
+{% set js_file = 'admin.js' %}
+{% set title = 'Manage Discounts - Future Mech Admin' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <section class="dashboard-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="dashboard-title">Manage Discounts</h1>
+                    <p class="dashboard-subtitle">Create and manage discount codes</p>
+                </div>
+                <div class="col-lg-4 dashboard-actions">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addDiscountModal">
+                            <i class="fas fa-plus me-2"></i>Add Discount
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container py-5">
+        <!-- Discounts Table -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h4 class="card-title">All Discount Codes</h4>
+                <div class="search-box">
+                    <input type="text" id="discountSearch" placeholder="Search discounts..." class="form-control">
+                </div>
+            </div>
+            <div class="card-body">
+                {% if discounts %}
+                <div class="table-responsive">
+                    <table class="table table-hover" id="discountsTable">
+                        <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Type</th>
+                                <th>Value</th>
+                                <th>Min Order</th>
+                                <th>Usage Limit</th>
+                                <th>Used</th>
+                                <th>Expiry Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for discount in discounts %}
+                            <tr class="{{ 'expired' if discount.expiry_date and discount.expiry_date < current_date }}">
+                                <td>
+                                    <strong>{{ discount.code }}</strong>
+                                    {% if discount.expiry_date and discount.expiry_date < current_date %}
+                                    <span class="badge bg-danger ms-1">Expired</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge type-{{ discount.discount_type }}">
+                                        {{ discount.discount_type.title() }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if discount.discount_type == 'percentage' %}
+                                    {{ discount.value }}%
+                                    {% else %}
+                                    ₹{{ "%.2f"|format(discount.value) }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if discount.min_order_value > 0 %}
+                                    ₹{{ "%.2f"|format(discount.min_order_value) }}
+                                    {% else %}
+                                    <span class="text-muted">No minimum</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if discount.usage_limit %}
+                                    {{ discount.usage_limit }}
+                                    {% else %}
+                                    <span class="text-muted">Unlimited</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ discount.used_count }}</td>
+                                <td>
+                                    {% if discount.expiry_date %}
+                                    {{ discount.expiry_date.strftime('%Y-%m-%d') }}
+                                    {% else %}
+                                    <span class="text-muted">No expiry</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge status-{{ 'active' if discount.is_active else 'inactive' }}">
+                                        {{ 'Active' if discount.is_active else 'Inactive' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-outline-primary edit-discount" 
+                                                data-discount-id="{{ discount.id }}"
+                                                data-code="{{ discount.code }}"
+                                                data-type="{{ discount.discount_type }}"
+                                                data-value="{{ discount.value }}"
+                                                data-min-order="{{ discount.min_order_value }}"
+                                                data-expiry="{{ discount.expiry_date.strftime('%Y-%m-%d') if discount.expiry_date else '' }}"
+                                                data-usage-limit="{{ discount.usage_limit or '' }}"
+                                                data-status="{{ discount.is_active }}">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger delete-discount" 
+                                                data-discount-id="{{ discount.id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-tag fa-3x"></i>
+                    <h5>No Discounts Found</h5>
+                    <p>There are no discount codes available yet.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Discount Modal -->
+<div class="modal fade" id="addDiscountModal" tabindex="-1" aria-labelledby="addDiscountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addDiscountModalLabel">Add New Discount Code</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="addDiscountForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="discountCode" class="form-label">Discount Code</label>
+                        <input type="text" class="form-control" id="discountCode" name="code" required>
+                        <div class="form-text">Use uppercase letters and numbers for better readability.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="discountType" class="form-label">Discount Type</label>
+                        <select class="form-select" id="discountType" name="discount_type" required>
+                            <option value="percentage">Percentage</option>
+                            <option value="fixed">Fixed Amount</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="discountValue" class="form-label">Discount Value</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="discountValue" name="value" step="0.01" required>
+                            <span class="input-group-text" id="valueSuffix">%</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="minOrderValue" class="form-label">Minimum Order Value (₹)</label>
+                        <input type="number" class="form-control" id="minOrderValue" name="min_order_value" step="0.01" value="0">
+                        <div class="form-text">Set to 0 for no minimum order requirement.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="expiryDate" class="form-label">Expiry Date</label>
+                        <input type="date" class="form-control" id="expiryDate" name="expiry_date">
+                        <div class="form-text">Leave blank for no expiry date.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="usageLimit" class="form-label">Usage Limit</label>
+                        <input type="number" class="form-control" id="usageLimit" name="usage_limit" min="1">
+                        <div class="form-text">Leave blank for unlimited usage.</div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="discountStatus" name="is_active" checked>
+                            <label class="form-check-label" for="discountStatus">
+                                Active
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Discount</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Discount Modal -->
+<div class="modal fade" id="editDiscountModal" tabindex="-1" aria-labelledby="editDiscountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editDiscountModalLabel">Edit Discount Code</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editDiscountForm">
+                <input type="hidden" id="editDiscountId" name="id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editDiscountCode" class="form-label">Discount Code</label>
+                        <input type="text" class="form-control" id="editDiscountCode" name="code" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDiscountType" class="form-label">Discount Type</label>
+                        <select class="form-select" id="editDiscountType" name="discount_type" required>
+                            <option value="percentage">Percentage</option>
+                            <option value="fixed">Fixed Amount</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDiscountValue" class="form-label">Discount Value</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="editDiscountValue" name="value" step="0.01" required>
+                            <span class="input-group-text" id="editValueSuffix">%</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editMinOrderValue" class="form-label">Minimum Order Value (₹)</label>
+                        <input type="number" class="form-control" id="editMinOrderValue" name="min_order_value" step="0.01">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editExpiryDate" class="form-label">Expiry Date</label>
+                        <input type="date" class="form-control" id="editExpiryDate" name="expiry_date">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUsageLimit" class="form-label">Usage Limit</label>
+                        <input type="number" class="form-control" id="editUsageLimit" name="usage_limit" min="1">
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="editDiscountStatus" name="is_active">
+                            <label class="form-check-label" for="editDiscountStatus">
+                                Active
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

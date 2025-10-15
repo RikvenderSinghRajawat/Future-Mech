@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Future Mech{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-background">
+        <div class="auth-overlay"></div>
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-lg-5 col-md-7">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <div class="auth-logo">
+                            <i class="fas fa-car-side"></i>
+                            <span>Future Mech</span>
+                        </div>
+                        <h2 class="auth-title">Create Account</h2>
+                        <p class="auth-subtitle">Join Future Mech and start your automotive journey</p>
+                    </div>
+                    
+                    <form id="registerForm" method="POST" class="auth-form">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-user"></i>
+                                </span>
+                                <input type="text" class="form-control" name="username" required 
+                                       placeholder="Enter your full name" value="{{ request.form.username if request.form.username }}">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-envelope"></i>
+                                </span>
+                                <input type="email" class="form-control" name="email" required 
+                                       placeholder="Enter your email" value="{{ request.form.email if request.form.email }}">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-phone"></i>
+                                </span>
+                                <input type="tel" class="form-control" name="phone" 
+                                       placeholder="Enter your phone number" value="{{ request.form.phone if request.form.phone }}">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                <input type="password" class="form-control" name="password" required 
+                                       placeholder="Create a password" id="passwordInput">
+                                <button type="button" class="input-group-text password-toggle" id="passwordToggle">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="password-strength">
+                                <div class="strength-bar">
+                                    <div class="strength-fill"></div>
+                                </div>
+                                <div class="strength-text">Password strength</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Confirm Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                                <input type="password" class="form-control" name="confirm_password" required 
+                                       placeholder="Confirm your password" id="confirmPasswordInput">
+                            </div>
+                        </div>
+                        
+                        <div class="form-options">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="terms" id="terms" required>
+                                <label class="form-check-label" for="terms">
+                                    I agree to the <a href="#" class="auth-link">Terms of Service</a> and <a href="#" class="auth-link">Privacy Policy</a>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary auth-btn">
+                            <span class="btn-text">Create Account</span>
+                            <span class="btn-loading" style="display: none;">
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                Creating Account...
+                            </span>
+                        </button>
+                    </form>
+                    
+                    <div class="auth-divider">
+                        <span>or</span>
+                    </div>
+                    
+                    <div class="social-login">
+                        <a href="{{ url_for('google_login') }}" class="btn btn-outline-primary social-btn">
+                            <i class="fab fa-google me-2"></i>
+                            Continue with Google
+                        </a>
+                        <a href="{{ url_for('facebook_login') }}" class="btn btn-outline-primary social-btn">
+                            <i class="fab fa-facebook-f me-2"></i>
+                            Continue with Facebook
+                        </a>
+                    </div>
+                    
+                    <div class="auth-footer">
+                        <p>Already have an account? <a href="{{ url_for('login') }}" class="auth-link">Sign in here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+{% endblock %}

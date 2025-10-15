@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+{% set css_file = 'admin.css' %}
+{% set js_file = 'admin.js' %}
+{% set title = 'Manage Car Parts - Future Mech Admin' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <section class="dashboard-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="dashboard-title">Manage Car Parts</h1>
+                    <p class="dashboard-subtitle">View and manage car parts inventory</p>
+                </div>
+                <div class="col-lg-4 dashboard-actions">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addPartModal">
+                            <i class="fas fa-plus me-2"></i>Add Part
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container py-5">
+        <!-- Car Parts Table -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h4 class="card-title">All Car Parts</h4>
+                <div class="search-box">
+                    <input type="text" id="partSearch" placeholder="Search parts..." class="form-control">
+                </div>
+            </div>
+            <div class="card-body">
+                {% if parts %}
+                <div class="table-responsive">
+                    <table class="table table-hover" id="partsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for part in parts %}
+                            <tr class="{{ 'low-stock' if part.stock < 10 }}">
+                                <td>{{ part.id }}</td>
+                                <td>
+                                    <div class="part-info">
+                                        <strong>{{ part.name }}</strong>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="part-desc" title="{{ part.description }}">
+                                        {{ part.description|truncate(50) }}
+                                    </span>
+                                </td>
+                                <td>₹{{ "%.2f"|format(part.price) }}</td>
+                                <td>
+                                    <span class="stock-badge {{ 'low' if part.stock < 10 else 'medium' if part.stock < 25 else 'high' }}">
+                                        {{ part.stock }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge category-badge">{{ part.category or 'Uncategorized' }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge status-{{ 'active' if part.is_active else 'inactive' }}">
+                                        {{ 'Active' if part.is_active else 'Inactive' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-outline-primary edit-part" 
+                                                data-part-id="{{ part.id }}"
+                                                data-name="{{ part.name }}"
+                                                data-description="{{ part.description }}"
+                                                data-price="{{ part.price }}"
+                                                data-stock="{{ part.stock }}"
+                                                data-category="{{ part.category }}"
+                                                data-status="{{ part.is_active }}">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger delete-part" 
+                                                data-part-id="{{ part.id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-success restock-part" 
+                                                data-part-id="{{ part.id }}"
+                                                data-part-name="{{ part.name }}">
+                                            <i class="fas fa-boxes"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-cog fa-3x"></i>
+                    <h5>No Car Parts Found</h5>
+                    <p>There are no car parts in inventory yet.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Stock Summary -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon bg-primary">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ total_parts }}</div>
+                        <div class="stat-label">Total Parts</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon bg-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ low_stock_count }}</div>
+                        <div class="stat-label">Low Stock Items</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-icon bg-danger">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{ out_of_stock_count }}</div>
+                        <div class="stat-label">Out of Stock</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Part Modal -->
+<div class="modal fade" id="addPartModal" tabindex="-1" aria-labelledby="addPartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPartModalLabel">Add New Car Part</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Add Part Modal -->
+            <form id="addPartForm" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="partName" class="form-label">Part Name</label>
+                        <input type="text" class="form-control" id="partName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="partDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="partDescription" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="partPrice" class="form-label">Price (₹)</label>
+                        <input type="number" class="form-control" id="partPrice" name="price" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="partStock" class="form-label">Stock Quantity</label>
+                        <input type="number" class="form-control" id="partStock" name="stock" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="partCategory" class="form-label">Category</label>
+                        <select class="form-select" id="partCategory" name="category">
+                            <option value="Engine">Engine</option>
+                            <option value="Brakes">Brakes</option>
+                            <option value="Suspension">Suspension</option>
+                            <option value="Electrical">Electrical</option>
+                            <option value="Exterior">Exterior</option>
+                            <option value="Interior">Interior</option>
+                            <option value="Tires">Tires</option>
+                            <option value="Lighting">Lighting</option>
+                            <option value="Filters">Filters</option>
+                            <option value="Fluids">Fluids</option>
+                            <option value="Ignition">Ignition</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="partImage" class="form-label">Part Image</label>
+                        <input type="file" class="form-control" id="partImage" name="image" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="partStatus" name="is_active" checked>
+                            <label class="form-check-label" for="partStatus">
+                                Active
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Part</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Part Modal -->
+<div class="modal fade" id="editPartModal" tabindex="-1" aria-labelledby="editPartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editPartModalLabel">Edit Car Part</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editPartForm" enctype="multipart/form-data">
+                <input type="hidden" id="editPartId" name="id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editPartName" class="form-label">Part Name</label>
+                        <input type="text" class="form-control" id="editPartName" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPartDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="editPartDescription" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPartPrice" class="form-label">Price (₹)</label>
+                        <input type="number" class="form-control" id="editPartPrice" name="price" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPartStock" class="form-label">Stock Quantity</label>
+                        <input type="number" class="form-control" id="editPartStock" name="stock" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPartCategory" class="form-label">Category</label>
+                        <select class="form-select" id="editPartCategory" name="category">
+                            <option value="Engine">Engine</option>
+                            <option value="Brakes">Brakes</option>
+                            <option value="Suspension">Suspension</option>
+                            <option value="Electrical">Electrical</option>
+                            <option value="Exterior">Exterior</option>
+                            <option value="Interior">Interior</option>
+                            <option value="Tires">Tires</option>
+                            <option value="Lighting">Lighting</option>
+                            <option value="Filters">Filters</option>
+                            <option value="Fluids">Fluids</option>
+                            <option value="Ignition">Ignition</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPartImage" class="form-label">Part Image (optional)</label>
+                        <input type="file" class="form-control" id="editPartImage" name="image" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="editPartStatus" name="is_active">
+                            <label class="form-check-label" for="editPartStatus">
+                                Active
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Restock Modal -->
+<div class="modal fade" id="restockModal" tabindex="-1" aria-labelledby="restockModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="restockModalLabel">Restock Part</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="restockForm">
+                <input type="hidden" id="restockPartId" name="part_id">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Part Name</label>
+                        <p class="form-control-static" id="restockPartName"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="restockQuantity" class="form-label">Quantity to Add</label>
+                        <input type="number" class="form-control" id="restockQuantity" name="quantity" min="1" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="restockNotes" class="form-label">Notes (Optional)</label>
+                        <textarea class="form-control" id="restockNotes" name="notes" rows="2" placeholder="Any notes about this restock..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Stock</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

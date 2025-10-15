@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+
+{% block title %}Payment - Future Mech{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/payment.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="payment-container">
+    <div class="payment-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h1 class="payment-title">Complete Your Payment</h1>
+                    <p class="payment-subtitle">Secure payment processing for your {{ type.title() }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="payment-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="payment-card">
+                        <div class="payment-summary">
+                            <div class="summary-header">
+                                <h3>Payment Summary</h3>
+                            </div>
+                            <div class="summary-body">
+                                <div class="summary-item">
+                                    <span class="item-label">{{ type.title() }}:</span>
+                                    <span class="item-value">{{ description }}</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="item-label">Amount:</span>
+                                    <span class="item-value">₹{{ "%.2f"|format(amount) }}</span>
+                                </div>
+                                <div class="summary-divider"></div>
+                                <div class="summary-total">
+                                    <span class="total-label">Total Amount:</span>
+                                    <span class="total-value">₹{{ "%.2f"|format(amount) }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="payment-methods">
+                            <div class="methods-header">
+                                <h3>Choose Payment Method</h3>
+                                <p>Select your preferred payment method</p>
+                            </div>
+
+                            <div class="payment-options">
+                                <!-- Credit/Debit Card -->
+                                <div class="payment-option active" data-method="card">
+                                    <div class="option-header">
+                                        <div class="option-icon">
+                                            <i class="fas fa-credit-card"></i>
+                                        </div>
+                                        <div class="option-info">
+                                            <h4>Credit/Debit Card</h4>
+                                            <p>Visa, Mastercard, American Express</p>
+                                        </div>
+                                        <div class="option-radio">
+                                            <input type="radio" name="payment_method" value="card" checked>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- PayPal -->
+                                <div class="payment-option" data-method="paypal">
+                                    <div class="option-header">
+                                        <div class="option-icon">
+                                            <i class="fab fa-paypal"></i>
+                                        </div>
+                                        <div class="option-info">
+                                            <h4>PayPal</h4>
+                                            <p>Pay with your PayPal account</p>
+                                        </div>
+                                        <div class="option-radio">
+                                            <input type="radio" name="payment_method" value="paypal">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- UPI -->
+                                <div class="payment-option" data-method="upi">
+                                    <div class="option-header">
+                                        <div class="option-icon">
+                                            <i class="fas fa-mobile-alt"></i>
+                                        </div>
+                                        <div class="option-info">
+                                            <h4>UPI Payment</h4>
+                                            <p>PhonePe, Google Pay, Paytm</p>
+                                        </div>
+                                        <div class="option-radio">
+                                            <input type="radio" name="payment_method" value="upi">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Apple Pay -->
+                                <div class="payment-option" data-method="apple_pay">
+                                    <div class="option-header">
+                                        <div class="option-icon">
+                                            <i class="fab fa-apple-pay"></i>
+                                        </div>
+                                        <div class="option-info">
+                                            <h4>Apple Pay</h4>
+                                            <p>Pay with Apple Pay</p>
+                                        </div>
+                                        <div class="option-radio">
+                                            <input type="radio" name="payment_method" value="apple_pay">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Bank Transfer -->
+                                <div class="payment-option" data-method="bank_transfer">
+                                    <div class="option-header">
+                                        <div class="option-icon">
+                                            <i class="fas fa-university"></i>
+                                        </div>
+                                        <div class="option-info">
+                                            <h4>Bank Transfer</h4>
+                                            <p>Direct bank transfer</p>
+                                        </div>
+                                        <div class="option-radio">
+                                            <input type="radio" name="payment_method" value="bank_transfer">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Digital Wallets -->
+                                <div class="payment-option" data-method="wallet">
+                                    <div class="option-header">
+                                        <div class="option-icon">
+                                            <i class="fas fa-wallet"></i>
+                                        </div>
+                                        <div class="option-info">
+                                            <h4>Digital Wallets</h4>
+                                            <p>Various digital wallet options</p>
+                                        </div>
+                                        <div class="option-radio">
+                                            <input type="radio" name="payment_method" value="wallet">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Cash on Delivery -->
+                                <div class="payment-option" data-method="cod">
+                                    <div class="option-header">
+                                        <div class="option-icon">
+                                            <i class="fas fa-money-bill-wave"></i>
+                                        </div>
+                                        <div class="option-info">
+                                            <h4>Cash on Delivery</h4>
+                                            <p>Pay when service is completed</p>
+                                        </div>
+                                        <div class="option-radio">
+                                            <input type="radio" name="payment_method" value="cod">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Cryptocurrency -->
+                                <div class="payment-option" data-method="crypto">
+                                    <div class="option-header">
+                                        <div class="option-icon">
+                                            <i class="fab fa-bitcoin"></i>
+                                        </div>
+                                        <div class="option-info">
+                                            <h4>Cryptocurrency</h4>
+                                            <p>Bitcoin, Ethereum, and more</p>
+                                        </div>
+                                        <div class="option-radio">
+                                            <input type="radio" name="payment_method" value="crypto">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Payment Form -->
+                        <div class="payment-form" id="card-form">
+                            <div class="form-header">
+                                <h4>Card Details</h4>
+                            </div>
+                            <form id="cardPaymentForm">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label">Card Number</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19">
+                                            <span class="input-group-text">
+                                                <i class="fas fa-credit-card"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Expiry Date</label>
+                                        <input type="text" class="form-control" id="card-expiry" placeholder="MM/YY" maxlength="5">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">CVV</label>
+                                        <input type="text" class="form-control" id="card-cvv" placeholder="123" maxlength="4">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Cardholder Name</label>
+                                        <input type="text" class="form-control" id="card-name" placeholder="John Doe">
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="save-card">
+                                            <label class="form-check-label" for="save-card">
+                                                Save card for future payments
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- UPI Payment Form -->
+                        <div class="payment-form" id="upi-form" style="display: none;">
+                            <div class="form-header">
+                                <h4>UPI Payment</h4>
+                            </div>
+                            <div class="upi-options">
+                                <div class="upi-option">
+                                    <div class="upi-icon">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </div>
+                                    <div class="upi-info">
+                                        <h5>PhonePe</h5>
+                                        <p>Pay using PhonePe UPI</p>
+                                    </div>
+                                    <button class="btn btn-outline-primary" onclick="initiateUPIPayment('phonepe')">
+                                        Pay Now
+                                    </button>
+                                </div>
+                                <div class="upi-option">
+                                    <div class="upi-icon">
+                                        <i class="fab fa-google-pay"></i>
+                                    </div>
+                                    <div class="upi-info">
+                                        <h5>Google Pay</h5>
+                                        <p>Pay using Google Pay</p>
+                                    </div>
+                                    <button class="btn btn-outline-primary" onclick="initiateUPIPayment('googlepay')">
+                                        Pay Now
+                                    </button>
+                                </div>
+                                <div class="upi-option">
+                                    <div class="upi-icon">
+                                        <i class="fas fa-qrcode"></i>
+                                    </div>
+                                    <div class="upi-info">
+                                        <h5>QR Code</h5>
+                                        <p>Scan QR code to pay</p>
+                                    </div>
+                                    <button class="btn btn-outline-primary" onclick="showQRCode()">
+                                        Show QR
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Other Payment Forms -->
+                        <div class="payment-form" id="other-forms" style="display: none;">
+                            <div class="form-header">
+                                <h4 id="other-form-title">Payment Details</h4>
+                            </div>
+                            <div class="other-payment-info">
+                                <div class="info-card">
+                                    <div class="info-icon">
+                                        <i class="fas fa-info-circle"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <h5>Payment Instructions</h5>
+                                        <p id="payment-instructions">Please follow the instructions for your selected payment method.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="payment-actions">
+                            <div class="security-info">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Your payment is secured with 256-bit SSL encryption</span>
+                            </div>
+                            <div class="action-buttons">
+                                <button type="button" class="btn btn-secondary" onclick="goBack()">
+                                    <i class="fas fa-arrow-left"></i>
+                                    Back
+                                </button>
+                                <button type="button" class="btn btn-primary" id="pay-now-btn" onclick="processPayment()">
+                                    <i class="fas fa-lock"></i>
+                                    Pay ₹{{ "%.2f"|format(amount) }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- QR Code Modal -->
+<div class="modal fade" id="qrCodeModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Scan QR Code</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="qr-code-container">
+                    <div class="qr-code" id="qr-code">
+                        <!-- QR code will be generated here -->
+                    </div>
+                    <p class="qr-instructions">Scan this QR code with your UPI app to complete the payment</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <h5>Processing Payment...</h5>
+                    <p>Please do not close this window</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://js.stripe.com/v3/"></script>
+<script src="{{ url_for('static', filename='js/payment.js') }}"></script>
+{% endblock %}
+
+
+
+
+

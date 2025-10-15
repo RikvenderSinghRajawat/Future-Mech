@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}Car Parts - Future Mech{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/car_parts.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <div class="page-header-content">
+                    <h1 class="display-3 fw-bold mb-4">Car Parts</h1>
+                    <p class="lead mb-0">Genuine and high-quality automotive parts for all makes and models</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- Search and Filter Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="search-filter-container">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" class="form-control" id="partsSearch" placeholder="Search car parts...">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" id="categoryFilter">
+                            <option value="">All Categories</option>
+                            {% for category in categories %}
+                                <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>
+                                    {{ category }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-primary w-100" id="clearFilters">
+                            <i class="fas fa-times me-2"></i>Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Parts Grid -->
+    <div class="row g-4" id="partsGrid">
+        {% for part in parts %}
+        <div class="col-lg-3 col-md-4 col-sm-6 part-card-wrapper" data-category="{{ part.category or '' }}">
+            <div class="part-card h-100">
+                <div class="part-image">
+                    <img src="{{ part.image_url or url_for('static', filename='images/part-placeholder.jpg') }}"
+                         alt="{{ part.name }}" class="img-fluid">
+                    <div class="part-badge">
+                        <span class="badge bg-success">In Stock</span>
+                    </div>
+                    <div class="part-overlay">
+                        <button class="btn btn-primary btn-sm quick-view-btn" data-part-id="{{ part.id }}">
+                            <i class="fas fa-eye me-1"></i>Quick View
+                        </button>
+                    </div>
+                </div>
+                <div class="part-content">
+                    <div class="part-category">{{ part.category or 'General' }}</div>
+                    <h5 class="part-title">{{ part.name }}</h5>
+                    <p class="part-description">{{ part.description[:100] }}{% if part.description|length > 100 %}...{% endif %}</p>
+                    <div class="part-price">
+                        <span class="price-currency">₹</span>
+                        <span class="price-amount">{{ "%.2f"|format(part.price) }}</span>
+                    </div>
+                    <div class="part-stock">
+                        <i class="fas fa-box me-1"></i>
+                        <span>{{ part.stock }} in stock</span>
+                    </div>
+                    <div class="part-actions">
+                        {% if session.user_id %}
+                            <div class="quantity-selector">
+                                <button class="btn btn-outline-secondary btn-sm quantity-btn" data-action="decrease">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" class="form-control quantity-input" value="1" min="1" max="{{ part.stock }}">
+                                <button class="btn btn-outline-secondary btn-sm quantity-btn" data-action="increase">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <button class="btn btn-primary add-to-cart-btn" data-part-id="{{ part.id }}">
+                                <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                            </button>
+                        {% else %}
+                            <a href="{{ url_for('login') }}" class="btn btn-primary w-100">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login to Purchase
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- No Results Message -->
+    <div class="row" id="noResults" style="display: none;">
+        <div class="col-12 text-center py-5">
+            <div class="no-results">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h4>No parts found</h4>
+                <p class="text-muted">Try adjusting your search criteria or browse all parts.</p>
+                <button class="btn btn-outline-primary" id="showAllParts">
+                    <i class="fas fa-list me-2"></i>Show All Parts
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick View Modal -->
+<div class="modal fade" id="quickViewModal" tabindex="-1" aria-labelledby="quickViewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quickViewModalLabel">Part Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="part-image-large">
+                            <img id="modalPartImage" src="" alt="" class="img-fluid rounded">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="part-details">
+                            <div class="part-category" id="modalPartCategory"></div>
+                            <h4 class="part-title" id="modalPartTitle"></h4>
+                            <p class="part-description" id="modalPartDescription"></p>
+                            <div class="part-price-large">
+                                <span class="price-currency">₹</span>
+                                <span class="price-amount" id="modalPartPrice"></span>
+                            </div>
+                            <div class="part-stock-info">
+                                <i class="fas fa-box me-1"></i>
+                                <span id="modalPartStock"></span> in stock
+                            </div>
+                            <div class="part-actions-modal">
+                                <div class="quantity-selector">
+                                    <button class="btn btn-outline-secondary btn-sm quantity-btn" data-action="decrease">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" class="form-control quantity-input" value="1" min="1">
+                                    <button class="btn btn-outline-secondary btn-sm quantity-btn" data-action="increase">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                <button class="btn btn-primary add-to-cart-modal-btn">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/car_parts.js') }}"></script>
+{% endblock %}
+
+
+
+

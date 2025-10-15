@@ -1,0 +1,135 @@
+future_mech/
+├── app.py
+├── config.py
+├── requirements.txt
+├── schema.sql
+├── templates/
+│   ├── base.html
+│   ├── home.html
+│   ├── services.html
+│   ├── car_parts.html
+│   ├── contact.html
+│   ├── login.html
+│   ├── register.html
+│   ├── dashboard_client.html
+│   ├── dashboard_service.html
+│   ├── dashboard_admin.html
+│   ├── admin_users.html
+│   ├── admin_services.html
+│   ├── admin_car_parts.html
+│   ├── admin_bookings.html
+│   ├── admin_orders.html
+│   ├── admin_discounts.html
+│   ├── admin_analytics.html
+│   ├── service_booking_details.html
+│   ├── book_service.html
+│   ├── cart.html
+│   ├── payment.html
+│   ├── pdi_report_template.html
+│   ├── job_card_template.html
+│   ├── 404.html
+│   └── 500.html
+├── static/
+│   ├── css/
+│   │   ├── style.css
+│   │   ├── home.css
+│   │   ├── services.css
+│   │   ├── car_parts.css
+│   │   ├── contact.css
+│   │   ├── auth.css
+│   │   ├── dashboard.css
+│   │   ├── admin.css
+│   │   └── service_person.css
+│   ├── js/
+│   │   ├── main.js
+│   │   ├── services.js
+│   │   ├── car_parts.js
+│   │   ├── contact.js
+│   │   ├── auth.js
+│   │   ├── dashboard.js
+│   │   ├── admin.js
+│   │   └── service_person.js
+│   └── images/
+│       ├── logo.png
+│       ├── hero-bg.jpg
+│       └── favicon.ico
+└── reports/
+
+
+
+future_mech/
+├── app.py                  # Main Flask application file
+├── config.py               # Configuration settings
+├── requirements.txt        # Python dependencies
+├── schema.sql              # Database schema
+├── .env                    # Environment variables
+├── logs/                   # Application logs
+│   └── future_mech.log
+├── reports/                # Generated reports directory
+├── templates/              # HTML templates
+│   ├── base.html           # Base template with common elements
+│   ├── home.html           # Homepage
+│   ├── services.html       # Services listing page
+│   ├── car_parts.html      # Car parts catalog
+│   ├── contact.html        # Contact form
+│   ├── login.html          # User login
+│   ├── register.html       # User registration
+│   ├── forgot_password.html # Password recovery
+│   ├── reset_password.html # Password reset
+│   ├── dashboard_client.html # Client dashboard
+│   ├── dashboard_service.html # Service technician dashboard
+│   ├── dashboard_admin.html # Admin dashboard
+│   ├── admin_users.html    # User management
+│   ├── admin_services.html # Services management
+│   ├── admin_car_parts.html # Car parts management
+│   ├── admin_bookings.html # Bookings management
+│   ├── admin_orders.html   # Orders management
+│   ├── admin_discounts.html # Discounts management
+│   ├── admin_reports.html  # Reports management
+│   ├── cart.html           # Shopping cart
+│   ├── payment.html        # Payment processing
+│   ├── 404.html            # Error page - Not found
+│   └── 500.html            # Error page - Server error
+├── static/                 # Static assets
+│   ├── css/                # Stylesheets
+│   │   ├── style.css       # Global styles
+│   │   ├── home.css        # Homepage styles
+│   │   ├── services.css    # Services page styles
+│   │   ├── car_parts.css   # Car parts page styles
+│   │   ├── contact.css     # Contact page styles
+│   │   ├── auth.css        # Authentication pages styles
+│   │   ├── cart.css        # Shopping cart styles
+│   │   ├── payment.css     # Payment page styles
+│   │   ├── dashboard_admin.css # Admin dashboard styles
+│   │   ├── dashboard_client.css # Client dashboard styles
+│   │   ├── dashboard_service.css # Service dashboard styles
+│   │   ├── admin.css       # Admin pages common styles
+│   │   └── admin_bookings.css # Admin bookings page styles
+│   ├── js/                 # JavaScript files
+│   │   ├── main.js         # Global JavaScript
+│   │   ├── home.js         # Homepage scripts
+│   │   ├── services.js     # Services page scripts
+│   │   ├── car_parts.js    # Car parts page scripts
+│   │   ├── contact.js      # Contact page scripts
+│   │   ├── auth.js         # Authentication scripts
+│   │   ├── cart.js         # Shopping cart scripts
+│   │   ├── payment.js      # Payment processing scripts
+│   │   ├── dashboard_admin.js # Admin dashboard scripts
+│   │   ├── dashboard_client.js # Client dashboard scripts
+│   │   ├── dashboard_service.js # Service dashboard scripts
+│   │   └── admin.js        # Admin pages common scripts
+│   ├── images/             # Image assets
+│   │   ├── logo.png        # Site logo
+│   │   ├── favicon.ico     # Favicon
+│   │   ├── hero-bg.jpg     # Hero background
+│   │   ├── hero-car.jpg    # Hero car image
+│   │   ├── service-1.jpg   # Service image
+│   │   ├── service-2.jpg   # Service image
+│   │   ├── service-placeholder.jpg # Service placeholder
+│   │   ├── part-placeholder.jpg # Part placeholder
+│   │   └── workshop.jpg    # Workshop image
+│   └── uploads/            # User uploaded files
+│       ├── avatars/        # User profile images
+│       ├── car_parts/      # Car part images
+│       └── services/       # Service images
+└── init_database.py        # Database initialization script
