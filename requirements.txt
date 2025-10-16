@@ -11,6 +11,5 @@ Flask-OAuthlib==0.9.6
 google-auth==2.34.0
 google-auth-oauthlib==1.2.0
 requests-oauthlib==2.0.0
-# Pillow 10+ works with Python 3.13
 Pillow==10.3.0
 gunicorn==22.0.0
