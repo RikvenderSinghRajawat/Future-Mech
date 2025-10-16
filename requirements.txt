@@ -6,7 +6,7 @@ reportlab
 itsdangerous
 bcrypt
 python-dotenv
-Pillow
+
 email-validator
 Flask-OAuthlib
 google-auth
@@ -20,7 +20,8 @@ reportlab==4.0.4
 itsdangerous==2.1.2
 bcrypt==4.0.1
 python-dotenv==1.0.0
-Pillow==10.0.1
+Pillow==9.5.0
+
 email-validator==2.0.0
 google-auth==2.22.0
 google-auth-oauthlib==1.0.0
