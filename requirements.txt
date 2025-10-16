@@ -1,17 +1,4 @@
-Flask
-Flask-MySQL
-Werkzeug
-stripe
-reportlab
-itsdangerous
-bcrypt
-python-dotenv
 
-email-validator
-Flask-OAuthlib
-google-auth
-google-auth-oauthlib
-requests-oauthlib
 Flask==2.3.3
 Flask-MySQL==1.5.2
 Werkzeug==2.3.7
