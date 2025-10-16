@@ -7,12 +7,12 @@ class Config:
     PERMANENT_SESSION_LIFETIME = timedelta(days=7)
     
     # MySQL Configuration
-    MYSQL_HOST = "bxn6gxbdphxn0eyrj5rv-mysql.services.clever-cloud.com"
-    MYSQL_USER = "uc7mxrhw5nmds2tn"
-    MYSQL_PASSWORD = "lzUgNO6sy3YP5t5FUt5C"
-    MYSQL_DB = "bxn6gxbdphxn0eyrj5rv"
-    MYSQL_PORT = 3306
-    MYSQL_CURSORCLASS = "DictCursor"  # if you use dictionary cursor
+    MYSQL_HOST = os.getenv("MYSQL_ADDON_HOST", "bxn6gxbdphxn0eyrj5rv-mysql.services.clever-cloud.com")
+    MYSQL_USER = os.getenv("MYSQL_ADDON_USER", "uc7mxrhw5nmds2tn")
+    MYSQL_PASSWORD = os.getenv("MYSQL_ADDON_PASSWORD", "lzUgNO6sy3YP5t5FUt5C")
+    MYSQL_DB = os.getenv("MYSQL_ADDON_DB", "bxn6gxbdphxn0eyrj5rv")
+    MYSQL_PORT = int(os.getenv("MYSQL_ADDON_PORT", 3306))
+    SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key")
 
     
     # Email Configuration (SMTP)
