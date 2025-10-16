@@ -10,26 +10,23 @@
 <!-- Hero Section -->
 <section class="hero-section">
     <div class="hero-overlay"></div>
-    <div class="parallax-layer parallax-layer-1"></div>
-    <div class="parallax-layer parallax-layer-2"></div>
     <div class="floating-element"></div>
     <div class="floating-element"></div>
     <div class="floating-element"></div>
     <div class="container">
         <div class="row min-vh-100 align-items-center">
-            <div class="col-lg-6">
+            <div class="col-12">
                 <div class="hero-content text-white">
                     <h1 class="display-3 fw-bold mb-4 hero-title">
-                        Drive the Future with 
-                        <span class="text-accent">Precision</span> and 
-                        <span class="text-accent">Power</span>
+                        <span class="title-line">Drive the Future with</span>
+                        <span class="title-line">Precision and Power</span>
                     </h1>
                     <p class="lead mb-4">
                         Experience premium automotive services and genuine car parts with cutting-edge technology 
                         and expert craftsmanship. Your vehicle deserves the best.
                     </p>
                     <div class="hero-buttons">
-                        <a href="{{ url_for('services') }}" class="btn btn-accent btn-lg me-3 pulse-animation">
+                        <a href="{{ url_for('services') }}" class="btn btn-accent btn-lg">
                             <i class="fas fa-wrench me-2"></i>
                             Our Services
                         </a>
@@ -38,21 +35,6 @@
                             Car Parts
                         </a>
                     </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="hero-image">
-                    <picture>
-                        <source media="(min-width: 1200px)" srcset="{{ url_for('static', filename='images/hero-car.jpg') }}" type="image/jpg">
-                        <source media="(min-width: 768px)" srcset="{{ url_for('static', filename='images/hero-car.jpg') }}" type="image/jpg">
-                        <source srcset="{{ url_for('static', filename='images/hero-car.jpg') }}" type="image/jpg">
-                        
-                        <source media="(min-width: 1200px)" srcset="{{ url_for('static', filename='images/hero-car.jpg') }}" type="image/jpg">
-                        <source media="(min-width: 768px)" srcset="{{ url_for('static', filename='images/hero-car.jpg') }}" type="image/jpg">
-                        <source srcset="{{ url_for('static', filename='images/hero-car.jpg') }}" type="image/jpg">
-                        
-                        <img src="{{ url_for('static', filename='images/hero-car.jpg') }}" alt="Premium Car Service" class="img-fluid rounded shadow-lg">
-                    </picture>
                 </div>
             </div>
         </div>
@@ -72,7 +54,7 @@
             </div>
         </div>
         
-        <div class="row g-4 overlapping-cards">
+        <div class="row g-4">
             <!-- PDI Service -->
             <div class="col-lg-4 col-md-6">
                 <div class="feature-card h-100 animate-on-scroll">
@@ -101,15 +83,15 @@
                         <i class="fas fa-shield-alt"></i>
                     </div>
                     <div class="feature-content">
-                        <h4 class="feature-title">SCI ( Car Inspection )</h4>
+                        <h4 class="feature-title">SCI (Car Inspection)</h4>
                         <p class="feature-description">
-                            Thorough evaluation of the vehicle’s engine, transmission, brakes, and suspension systems.
+                            Thorough evaluation of the vehicle's engine, transmission, brakes, and suspension systems.
                         </p>
                         <ul class="feature-list">
-        <li><i class="fas fa-check text-success me-2"></i>Engine Health Check</li>
-        <li><i class="fas fa-check text-success me-2"></i>Transmission & Clutch Test</li>
-        <li><i class="fas fa-check text-success me-2"></i>Brake Performance</li>
-    </ul>
+                            <li><i class="fas fa-check text-success me-2"></i>Engine Health Check</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Transmission & Clutch Test</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Brake Performance</li>
+                        </ul>
                         <a href="{{ url_for('services') }}" class="btn btn-outline-primary">Learn More</a>
                     </div>
                 </div>
@@ -203,7 +185,7 @@
 </section>
 
 <!-- Stats Section -->
-<section class="stats-section py-5 bg-primary text-white">
+<section class="stats-section py-5 text-white">
     <div class="container">
         <div class="row g-4 text-center">
             <div class="col-lg-3 col-md-6">
@@ -307,7 +289,7 @@
 </section>
 
 <!-- CTA Section -->
-<section class="cta-section py-5 bg-gradient">
+<section class="cta-section py-5">
     <div class="container">
         <div class="row justify-content-center text-center">
             <div class="col-lg-8">
@@ -318,17 +300,17 @@
                     </p>
                     <div class="cta-buttons">
                         {% if session.user_id %}
-                            <a href="{{ url_for('services') }}" class="btn btn-light btn-lg me-3">
+                            <a href="{{ url_for('services') }}" class="btn btn-light btn-lg">
                                 <i class="fas fa-calendar-alt me-2"></i>
                                 Book Service
                             </a>
                         {% else %}
-                            <a href="{{ url_for('register') }}" class="btn btn-light btn-lg me-3">
+                            <a href="{{ url_for('register') }}" class="btn btn-light btn-lg">
                                 <i class="fas fa-user-plus me-2"></i>
                                 Get Started
                             </a>
                         {% endif %}
-                        <a href="{{ url_for('contact') }}" class="btn text-black btn-outline-light btn-lg">
+                        <a href="{{ url_for('contact') }}" class="btn btn-outline-light btn-lg">
                             <i class="fas fa-phone me-2"></i>
                             Contact Us
                         </a>

@@ -64,3 +64,22 @@
 2025-10-15 21:27:18,202 INFO: Car part added successfully: battery B16 , ID: 11 [in d:\future mech\app.py:1911]
 2025-10-15 21:27:18,202 ERROR: Create notification error: (1054, "Unknown column 'role' in 'field list'") [in d:\future mech\app.py:1549]
 2025-10-15 21:27:18,206 INFO: Car part added successfully: battery B16 , ID: 12 [in d:\future mech\app.py:1911]
+2025-10-16 10:38:28,643 INFO: Future Mech startup [in F:\Future Mech\Future-Mech\app.py:72]
+2025-10-16 10:38:28,671 ERROR: Initialization error: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information. [in F:\Future Mech\Future-Mech\app.py:2123]
+2025-10-16 10:38:34,111 INFO: Future Mech startup [in F:\Future Mech\Future-Mech\app.py:72]
+2025-10-16 10:38:34,156 ERROR: Initialization error: Working outside of application context.
+
+This typically means that you attempted to use functionality that needed
+the current application. To solve this, set up an application context
+with app.app_context(). See the documentation for more information. [in F:\Future Mech\Future-Mech\app.py:2123]
+2025-10-16 10:38:46,326 ERROR: Error loading home page: (2002, "Can't connect to server on 'localhost' (10061)") [in F:\Future Mech\Future-Mech\app.py:365]
+2025-10-16 11:08:32,780 ERROR: Error loading home page: (2002, "Can't connect to server on 'localhost' (10061)") [in F:\Future Mech\Future-Mech\app.py:365]
+2025-10-16 11:13:18,131 ERROR: Error loading home page: (2002, "Can't connect to server on 'localhost' (10061)") [in F:\Future Mech\Future-Mech\app.py:365]
+2025-10-16 11:25:13,711 ERROR: Error loading car parts: (2002, "Can't connect to server on 'localhost' (10061)") [in F:\Future Mech\Future-Mech\app.py:412]
+2025-10-16 11:25:23,979 ERROR: Error loading car parts: (2002, "Can't connect to server on 'localhost' (10061)") [in F:\Future Mech\Future-Mech\app.py:412]
+2025-10-16 11:25:26,777 ERROR: Error loading services: (2002, "Can't connect to server on 'localhost' (10061)") [in F:\Future Mech\Future-Mech\app.py:378]
+2025-10-16 11:25:36,024 ERROR: Error loading home page: (2002, "Can't connect to server on 'localhost' (10061)") [in F:\Future Mech\Future-Mech\app.py:365]

@@ -23,20 +23,23 @@
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
 </head>
 <body>
-    <!-- Navigation -->
+    <!-- Navigation - Professional Layout -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
-                <i class="fas fa-car-side me-2"></i>
-                Future Mech
+            <!-- Left: Brand with Racing Car Logo -->
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ url_for('index') }}">
+                <i class="fas fa-car-side me-2 fs-4"></i>
+                <span class="brand-text">Future Mech</span>
             </a>
-            
+
+            <!-- Toggler for mobile -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
+            <!-- Center/Right: Navigation Links -->
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+                <ul class="navbar-nav mx-auto align-items-center">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('index') }}">Home</a>
                     </li>
@@ -51,14 +54,20 @@
                     </li>
                 </ul>
                 
-                <ul class="navbar-nav">
+                <!-- Auth Section -->
+                <ul class="navbar-nav align-items-center">
+                    <!-- Divider -->
+                    <li class="nav-item d-none d-lg-block">
+                        <span class="nav-divider"></span>
+                    </li>
+                    
                     {% if session.user_id %}
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-user me-1"></i>
+                            <a class="nav-link dropdown-toggle user-dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user-circle me-1 fs-5"></i>
                                 {{ session.username }}
                             </a>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item" href="{{ url_for('client_dashboard') }}">
                                     <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                                 </a></li>
@@ -78,10 +87,14 @@
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                            <a class="nav-link nav-link-auth" href="{{ url_for('login') }}">
+                                <i class="fas fa-sign-in-alt me-1"></i>Login
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn btn-outline-light ms-2 px-3" href="{{ url_for('register') }}">Register</a>
+                            <a class="btn btn-auth ms-2" href="{{ url_for('register') }}">
+                                <i class="fas fa-user-plus me-1"></i>Register
+                            </a>
                         </li>
                     {% endif %}
                 </ul>
@@ -118,7 +131,7 @@
                         <i class="fas fa-car-side me-2"></i>
                         Future Mech
                     </h5>
-                    <p >Drive the Future with Precision and Power. Your trusted partner for automotive services and car parts.</p>
+                    <p>Drive the Future with Precision and Power. Your trusted partner for automotive services and car parts.</p>
                     <div class="social-links">
                         <a href="#" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
                         <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
@@ -131,7 +144,7 @@
                     <h6 class="fw-bold mb-3">Services</h6>
                     <ul class="list-unstyled">
                         <li><a href="{{ url_for('services') }}" class="text-white text-decoration-none">PDI Inspection</a></li>
-                        <li><a href="{{ url_for('services') }}" class="text-white text-decoration-none">Car Inspection  </a></li>
+                        <li><a href="{{ url_for('services') }}" class="text-white text-decoration-none">Car Inspection</a></li>
                         <li><a href="{{ url_for('services') }}" class="text-white text-decoration-none">BSI Suspension</a></li>
                         <li><a href="{{ url_for('services') }}" class="text-white text-decoration-none">Car Detailing</a></li>
                         <li><a href="{{ url_for('services') }}" class="text-white text-decoration-none">Emergency SOS</a></li>
@@ -155,12 +168,12 @@
                     <h6 class="fw-bold mb-3 text-white">Contact Info</h6>
                     <ul class="list-unstyled">
                         <li class="mb-2 text-light">
-                            <i class="fas fa-map-marker-alt me-2  text-primary"></i>
+                            <i class="fas fa-map-marker-alt me-2 text-primary"></i>
                             123 Auto Street, Car City, CC 12345
                         </li>
                         <li class="mb-2 text-light">
                             <i class="fas fa-phone me-2 text-primary"></i>
-                            <a href="tel:+15551234567" class="text-light text-white text-decoration-none">6378528881</a>
+                            <a href="tel:6378528881" class="text-light text-white text-decoration-none">6378528881</a>
                         </li>
                         <li class="mb-2 text-light">
                             <i class="fas fa-envelope me-2 text-primary"></i>
@@ -178,10 +191,10 @@
             
             <div class="row align-items-center">
                 <div class="col-md-6">
-                    <p class=" text-white mb-0">&copy; 2025 Future Mech. All rights reserved.</p>
+                    <p class="text-white mb-0">&copy; 2025 Future Mech. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <a href="#" class=" text-white text-decoration-none me-3">Privacy Policy</a>
+                    <a href="#" class="text-white text-decoration-none me-3">Privacy Policy</a>
                     <a href="#" class="text-white text-decoration-none me-3">Terms of Service</a>
                     <a href="#" class="text-white text-decoration-none">Sitemap</a>
                 </div>
