@@ -1,5 +1,5 @@
 Flask==2.3.3
-PyMySQL>=1.1.0
+Flask-MySQLdb==0.2.0
 Werkzeug==2.3.7
 stripe==10.10.0
 reportlab==4.2.2
